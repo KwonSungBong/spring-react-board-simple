@@ -3,7 +3,7 @@
  */
 import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
-import {Form, FormControl, FormGroup, ControlLabel, HelpBlock, Row, Col, ButtonGroup, Button, Modal, Thumbnail} from 'react-bootstrap';
+import {Form, FormControl, FormGroup, ControlLabel, HelpBlock, Panel, Grid, Row, Col, ButtonGroup, Button, Thumbnail} from 'react-bootstrap';
 
 import {connect} from 'react-redux';
 import {reduxForm} from 'redux-form';
@@ -38,9 +38,9 @@ export default class PostFormWrapper extends Component {
         const {post} = this.props;
 
         return (
-            <div>
+            <Grid>
                 <PostForm initialValues={post} />
-            </div>
+            </Grid>
         )
     }
 }
@@ -108,17 +108,6 @@ class PostForm extends Component {
 
                 this.editor.config.filebrowserImageUploadUrl = 'http://localhost:8080/image/ckeditor-upload?fileIdSetting=' + fileIdSetting;
                 this.editor.config.removeButtons = 'BrowseServer';
-
-                this.editor.on('fileUploadResponse', (event) => {
-                    event.stop();
-
-                    let data = event.data,
-                        xhr = data.fileLoader.xhr,
-                        response = JSON.parse(xhr.responseText);
-
-                    data.url = response[0].originUrl;
-                    imageList.addField(response[0]);
-                });
             }
         });
     }
@@ -132,33 +121,30 @@ class PostForm extends Component {
     render() {
         const {fields: {idx, subject, content}, values, handleSubmit, submitting, invalid} = this.props;
         const {loading, pushState, create, update, page} = this.props;
+        const wordBreakStyle = {wordBreak: 'break-all'};
+
+        const header = (
+            <FormGroup controlId="subject" validationState={subject.visited && subject.invalid ? 'error' : ''}>
+                <FormControl type="text" placeholder="제목" {...subject} />
+                {subject.touched && subject.error && <HelpBlock>{subject.error}</HelpBlock>}
+            </FormGroup>
+        );
 
         return (
             <Form horizontal onSubmit={handleSubmit}>
-                <FormGroup controlId="subject" validationState={subject.visited && subject.invalid ? 'error' : ''}>
-                    <Col sm={2} componentClass={ControlLabel}>
-                        제목
-                    </Col>
-                    <Col sm={10}>
-                        <FormControl type="text" placeholder="제목" {...subject} />
-                        {subject.touched && subject.error && <HelpBlock>{subject.error}</HelpBlock>}
-                    </Col>
-                </FormGroup>
-                <FormGroup controlId="content">
-                    <Col>
+                <Panel style={wordBreakStyle} header={header}>
+                    <FormGroup controlId="content">
                         <FormControl ref="editor" componentClass="textarea" rows="10" {...content} />
-                    </Col>
-                </FormGroup>
+                    </FormGroup>
+                </Panel>
                 <ButtonGroup className="pull-right">
                     <Button type="submit" disabled={submitting || invalid || loading}
-                            bsStyle="primary" onClick={handleSubmit(() => {
+                            bsStyle="success" onClick={handleSubmit(() => {
                         values.content = this.editor.getData();
                         if(idx.value){
-                            update(values);
-                            pushState('/post/page/' + page);
+                            update(values).then(result => pushState('/post/detail/' + idx.value));
                         } else {
-                            create(values);
-                            pushState('/post');
+                            create(values).then(result => pushState('/post'));
                         }
                     })}>
                         저장

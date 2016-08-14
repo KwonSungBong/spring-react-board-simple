@@ -6,15 +6,15 @@ import {
 	Root,
 	Home,
 	Login,
-	Card,
-	Chat,
+	Join,
 	Post,
 	PostList,
-	PostForm
+	PostForm,
+	PostDetail
 } from './containers';
 
 export default (store) => {
-	store.dispatch(loadAuth());
+	//store.dispatch(loadAuth());
 
 	// onEnter={requireLogin}
 	const requireLogin = (nextState, replace, cb) => {
@@ -48,14 +48,14 @@ export default (store) => {
 		<Route path="/" component={Root}>
 			{ /* Home (main) route */ }
 			<IndexRoute component={Home}/>
-			<Route path="/login" component={Login} />
-			<Route path="card" component={Card} />
-			<Route path="chat" component={Chat} />
+			<Route path="login" component={Login} />
+			<Route path="join" component={Join} />
 			<Route path="post" component={Post}>
 				<IndexRoute component={PostList} />
 				<Route path="page/:page" component={PostList} />
 				<Route path="form" component = {PostForm} />
 				<Route path="form/:idx" component = {PostForm} />
+				<Route path="detail/:idx" component = {PostDetail} />
 			</Route>
 		</Route>
 	);

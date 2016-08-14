@@ -30,4 +30,5 @@ CKEDITOR.editorConfig = function( config ) {
 	config.extraPlugins = 'uploadimage';
 	config.imageUploadUrl = '/api/image/upload';
 	config.removeButtons = 'Save,NewPage,Print,Templates,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,NumberedList,BulletedList,CreateDiv,Blockquote,Anchor,Youtube,PageBreak,SpecialChar,Smiley,HorizontalRule,Table,Flash,Font,FontSize,Styles,About';
+	config.extraPlugins = 'image2';
 };

@@ -9,6 +9,10 @@ const FIND_LIST = "post/FIND_LIST";
 const FIND_LIST_SUCCESS = "post/FIND_LIST_SUCCESS";
 const FIND_LIST_FAIL = "post/FIND_LIST_FAIL";
 
+const MORE_LIST = "post/MORE_LIST";
+const MORE_LIST_SUCCESS = "post/MORE_LIST_SUCCESS";
+const MORE_LIST_FAIL = "post/MORE_LIST_FAIL";
+
 const FIND_ONE = "post/FIND_ONE";
 const FIND_ONE_SUCCESS = "post/FIND_ONE_SUCCESS";
 const FIND_ONE_FAIL = "post/FIND_ONE_FAIL";
@@ -50,23 +54,41 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 loading: false
-            }
+            };
         case FIND_LIST:
             return {
                 ...state,
                 loading: true
-            }
+            };
         case FIND_LIST_SUCCESS:
             return {
                 ...state,
                 postList: action.result,
                 loading: false
-            }
+            };
         case FIND_LIST_FAIL:
             return {
                 ...state,
                 loading: false
-            }
+            };
+        case MORE_LIST:
+            return {
+                ...state,
+                loading: true
+            };
+        case MORE_LIST_SUCCESS:
+            return {
+                ...state,
+                postList: Object.assign({}, action.result, {
+                    content: [...state.postList.content, ...action.result.content]
+                }),
+                loading: false
+            };
+        case MORE_LIST_FAIL:
+            return {
+                ...state,
+                loading: false
+            };
         case FIND_ONE:
             return {
                 ...state,
@@ -77,52 +99,52 @@ export default function reducer(state = initialState, action = {}) {
                 ...state,
                 post: action.result,
                 loading: false
-            }
+            };
         case FIND_ONE_FAIL:
             return {
                 ...state,
                 loading: false
-            }
+            };
         case RESET_ONE:
             return {
                 ...state,
                 post: {}
-            }
+            };
         case CREATE:
             return {
                 ...state,
                 loading: true
-            }
+            };
         case CREATE_SUCCESS:
             return {
                 ...state,
                 loading: true
-            }
+            };
         case CREATE_FAIL:
             return {
                 ...state,
                 loading: false
-            }
+            };
         case UPDATE:
             return {
                 ...state,
                 loading: true
-            }
+            };
         case UPDATE_SUCCESS:
             return {
                 ...state,
                 loading: false
-            }
+            };
         case UPDATE_FAIL:
             return {
                 ...state,
                 loading: false
-            }
+            };
         case REMOVE:
             return {
                 ...state,
                 loading: true
-            }
+            };
         case REMOVE_SUCCESS:
             return {
                 ...state,
@@ -131,12 +153,12 @@ export default function reducer(state = initialState, action = {}) {
                     post.idx !== action.idx)
                 }),
                 loading: false
-            }
+            };
         case REMOVE_FAIL:
             return {
                 ...state,
                 loading: false
-            }
+            };
         default:
             return state;
     }
@@ -153,6 +175,13 @@ export function findList(page = 0){
     return {
         types: [FIND_LIST, FIND_LIST_SUCCESS, FIND_LIST_FAIL],
         promise: (client) => client.get('/post?page=' + page)
+    }
+}
+
+export function moreList(morePage){
+    return {
+        types: [MORE_LIST, MORE_LIST_SUCCESS, MORE_LIST_FAIL],
+        promise: (client) => client.get('/post?page=' + morePage)
     }
 }
 

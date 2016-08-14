@@ -2,11 +2,11 @@
  * Created by 권성봉 on 2016. 8. 1..
  */
 import React, {Component, PropTypes} from 'react';
-import {ListGroup, ListGroupItem, Media, Pagination, ButtonGroup, Button} from 'react-bootstrap';
+import {Grid, Row, Col, Thumbnail, ListGroup, ListGroupItem, Media, Pagination, ButtonGroup, Button} from 'react-bootstrap';
 import {connect} from 'react-redux';
 import {asyncConnect} from "redux-connect";
 import {push as pushState} from 'react-router-redux';
-import {findList, remove} from 'redux/reducers/post';
+import {findList, moreList} from 'redux/reducers/post';
 
 @asyncConnect([{
     promise: ({store : {dispatch, getState}, params}) => {
@@ -22,13 +22,11 @@ import {findList, remove} from 'redux/reducers/post';
         loading: state.post.loading,
         postList: state.post.postList || {}
     }),
-    {pushState, remove}
+    {pushState, moreList}
 )
 export default class PostList extends Component {
     static propTypes = {
-        postList: PropTypes.object.isRequired,
-        pushState: PropTypes.func.isRequired,
-        remove: PropTypes.func.isRequired
+        postList: PropTypes.object.isRequired
     }
 
     removeAction(idx){
@@ -51,46 +49,32 @@ export default class PostList extends Component {
     }
 
     render() {
-        const {loading, postList, pushState} = this.props;
-        const bodyStyle = {wordBreak: 'break-all'};
+        const {postList, pushState, moreList} = this.props;
+        const wordBreakStyle = {wordBreak: 'break-all'};
+        const cursorStyle = {cursor: 'pointer'};
 
         return (
-            <div>
-                <ListGroup>
+            <Grid>
+                <Row className="show-grid">
                     {
                         postList.content && postList.content.length > 0 && postList.content.map((post, i) =>
-                            <ListGroupItem key={i}>
-                                <Media>
-                                    <Media.Left>
-                                        <img width={64} height={64} src="http://www.carlab.co.kr/file/downImg/FILE_000000000026150/1.jpg" alt="Image"/>
-                                    </Media.Left>
-                                    <Media.Body>
-                                        <Media.Heading style={bodyStyle}>{post.subject}</Media.Heading>
-                                        <p style={bodyStyle}>{post.summaryContent}</p>
-                                    </Media.Body>
-                                    <Media.Right>
-                                        <ButtonGroup className="pull-right">
-                                            <Button disabled={loading} onClick={() => pushState('/post/form/' + post.idx)}>수정</Button>
-                                            <Button disabled={loading} onClick={() => this.removeAction(post.idx)}>삭제</Button>
-                                        </ButtonGroup>
-                                    </Media.Right>
-                                </Media>
-                            </ListGroupItem>
+                            <Col key={i} xs={12} sm={6} md={4} lg={3}>
+                                <Thumbnail style={wordBreakStyle} src={post.summaryImage} alt=""
+                                           onClick={() => pushState('/post/detail/' + post.idx)}>
+                                    <h3>{post.subject}</h3>
+                                    <p>{post.summaryContent}</p>
+                                </Thumbnail>
+                            </Col>
                         )
                     }
-                </ListGroup>
-                <div className="text-center">
-                    <Pagination
-                        first={postList.first}
-                        last={postList.last}
-                        boundaryLinks
-                        items={postList.totalPages}
-                        maxButtons={5}
-                        activePage={postList.number + 1}
-                        onSelect={(e, se) => pushState('/post/page/' + e)}
-                    />
-                </div>
-            </div>
+                </Row>
+                {
+                    !postList.last &&
+                    <Row>
+                        <Button onClick={() => moreList(postList.number + 1)}>더보기</Button>
+                    </Row>
+                }
+            </Grid>
         )
     }
 }

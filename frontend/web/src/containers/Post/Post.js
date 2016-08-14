@@ -22,27 +22,22 @@ export default class Post extends Component {
         const {loading, pushState} = this.props;
         const {props: {route: {path}}} = this.props.children;
 
-        const title = (
-            <div className="clearfix">
-                <h1 className="pull-left panel-title">
-                    포스트
-                    {path && path === 'form' && ' 등록'}
-                    {path && path === 'form/:idx' && ' 수정'}
-                </h1>
-                {
-                    (!path || path === 'page/:page') &&
-                    <Button disabled={loading} className="pull-right" onClick={() => pushState('/post/form')}>
-                        등록
-                    </Button>
-                }
-            </div>
-        );
-
         return (
             <Grid>
-                <Panel header={title}>
-                    {this.props.children}
-                </Panel>
+                <Grid>
+                    <h1 className="pull-left">
+                        포스트
+                        {path && path === 'form' && ' 등록'}
+                        {path && path === 'form/:idx' && ' 수정'}
+                    </h1>
+                    {
+                        (!path || path === 'page/:page') &&
+                        <Button disabled={loading} className="pull-right" onClick={() => pushState('/post/form')}>
+                            등록
+                        </Button>
+                    }
+                </Grid>
+                {this.props.children}
             </Grid>
         )
     }

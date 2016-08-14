@@ -10,31 +10,36 @@ export default class Top extends Component {
 
 	render() {
 		return (
-			<Navbar>
+			<Navbar inverse>
 				<Navbar.Header>
-
+					<Navbar.Brand>
+						<a href="/">Board</a>
+					</Navbar.Brand>
+					<Navbar.Toggle />
 				</Navbar.Header>
 				<Navbar.Collapse>
 					<Nav>
-						<LinkContainer to="">
-							<NavItem eventKey={1}>
-								홈
-							</NavItem>
+						<LinkContainer to="/post">
+							<NavItem eventKey={1} href="#">포스트</NavItem>
 						</LinkContainer>
-						<NavDropdown eventKey={2} title="멀티플" id="etc">
-							<LinkContainer to="/post">
-								<MenuItem eventKey={2.1}>포스트</MenuItem>
-							</LinkContainer>
-							<LinkContainer to="/card">
-								<MenuItem eventKey={2.2}>카드</MenuItem>
-							</LinkContainer>
-							<LinkContainer to="/chat">
-								<MenuItem eventKey={2.3}>채팅</MenuItem>
-							</LinkContainer>
-							<LinkContainer to="/login">
-								<MenuItem eventKey={2.4}>로그인</MenuItem>
-							</LinkContainer>
+						<LinkContainer to="/login">
+							<NavItem eventKey={2} href="#">채팅</NavItem>
+						</LinkContainer>
+						<NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
+							<MenuItem eventKey={3.1}>test1</MenuItem>
+							<MenuItem eventKey={3.2}>test2</MenuItem>
+							<MenuItem eventKey={3.3}>test3</MenuItem>
+							<MenuItem divider />
+							<MenuItem eventKey={3.3}>test4</MenuItem>
 						</NavDropdown>
+					</Nav>
+					<Nav pullRight>
+						<LinkContainer to="/login">
+							<NavItem eventKey={1} href="#">로그인</NavItem>
+						</LinkContainer>
+						<LinkContainer to="/join">
+							<NavItem eventKey={2} href="#">가입</NavItem>
+						</LinkContainer>
 					</Nav>
 				</Navbar.Collapse>
 			</Navbar>

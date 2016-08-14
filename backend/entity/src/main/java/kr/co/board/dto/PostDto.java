@@ -2,6 +2,9 @@ package kr.co.board.dto;
 
 import lombok.Data;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by ksb on 2016-08-06.
  */
@@ -17,20 +20,35 @@ public class PostDto {
         private String content;
         private ImageGroupDto.Response imageGroup;
 
-        public String getSummaryContent(){
-            if(content.length()<CONTENT_SUMMARY_END_INDEX) {
-                return content;
+        public String getSummaryContent() {
+            String removeTagContent = removeTag(this.content);
+            if(removeTagContent.length()<CONTENT_SUMMARY_END_INDEX) {
+                return removeTagContent;
             } else {
-                return content.substring(CONTENT_SUMMARY_START_INDEX, CONTENT_SUMMARY_END_INDEX -3) + "...";
+                return removeTagContent.substring(CONTENT_SUMMARY_START_INDEX, CONTENT_SUMMARY_END_INDEX -3) + "...";
             }
         }
 
-        public boolean isExcessSummaryContent() {
-            if (content.length() < CONTENT_SUMMARY_END_INDEX) {
-                return false;
-            } else {
-                return true;
+        public String getSummaryImage(){
+            Pattern pattern  =  Pattern.compile("<img[^>]*src=[\"']?([^>\"']+)[\"']?[^>]*>");
+            Matcher match = pattern.matcher(content);
+            String imgTag = null;
+            String src = null;
+
+            if(match.find()){
+                imgTag = match.group(0);
+
+                Pattern pattern2 = Pattern.compile("src=\"(.*?)\"");
+                Matcher match2 = pattern2.matcher(imgTag);
+                if (match2.find()) {
+                    src = match2.group(1);
+                }
             }
+            return src;
+        }
+
+        public String removeTag(String html) {
+            return html.replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", "");
         }
     }
 

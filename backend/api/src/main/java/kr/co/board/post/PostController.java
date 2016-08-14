@@ -30,7 +30,7 @@ public class PostController {
     }
 
     @GetMapping
-    public Page<PostDto.Summary> findSummaryList(@PageableDefault(sort = "idx", direction = Sort.Direction.DESC) Pageable pageable){
+    public Page<PostDto.Summary> findSummaryList(@PageableDefault(value = 20, sort = "idx", direction = Sort.Direction.DESC) Pageable pageable){
         return postServiceImpl.findSummaryList(pageable);
     }
 
