@@ -1,0 +1,54 @@
+#공통 설정
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    generate-ddl: false
+    show-sql: true
+
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    url: jdbc:h2:file:~/board;AUTO_SERVER=TRUE
+
+  redis:
+    host: localhost
+    password:
+    port: 6379
+
+  session:
+    store-type: none
+
+  profiles:
+    active: local
+
+  http:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+management:
+  security:
+    sessions: NEVER
+
+logging:
+  level:
+    kr.co.board: DEBUG
+
+board:
+  # 이미지 호스팅
+  image-host-url: http://localhost:8080/image
+  # 업로드 설정
+  upload:
+    path: /Users/ksb/test
+
+# 시큐어리티 default settings
+---
+spring:
+  profiles: security
+
+management:
+  security:
+    sessions: ALWAYS

@@ -1,0 +1,6 @@
+rootProject.name = 'backend'
+include 'api'
+include 'cmm-config'
+include 'cmm-logic'
+include 'entity'
+include 'security'

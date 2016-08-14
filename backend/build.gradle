@@ -1,0 +1,128 @@
+group 'kr.co.board'
+version '2.0'
+
+buildscript {
+    ext {
+        springBootVersion = '1.4.0.RELEASE'
+        hibernateVersion = '5.1.0.Final'
+        springSocialSecurityVersion = '1.1.4.RELEASE'
+        springSessionVersion = '1.2.1.RELEASE'
+    }
+    repositories {
+        maven { url "http://repo.spring.io/snapshot" }
+        maven { url 'http://repo.spring.io/libs-milestone' }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+allprojects {
+    apply plugin: 'spring-boot'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        maven { url "http://repo.spring.io/snapshot" }
+        maven {
+            url 'http://repo.spring.io/libs-milestone'
+        }
+        jcenter()
+        mavenCentral()
+    }
+}
+
+List springSocial = ['org.springframework.social:spring-social-security:1.1.4.RELEASE', 'org.springframework.social:spring-social-config:1.1.4.RELEASE']
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    dependencies {
+        compile("org.springframework.boot:spring-boot-starter-aop:${springBootVersion}")
+        compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+
+        compile("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}")
+        compile("org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}")
+
+        compile("org.hibernate:hibernate-core:${hibernateVersion}")
+        compile("org.hibernate:hibernate-java8:${hibernateVersion}")
+        compile("org.hibernate:hibernate-entitymanager:${hibernateVersion}")
+
+        compile("org.springframework.boot:spring-boot-starter-logging:${springBootVersion}")
+
+        compile("org.modelmapper:modelmapper:0.7.6")
+        compile("joda-time:joda-time:2.9.4")
+        compile("org.jadira.usertype:usertype.extended:5.0.0.GA")
+
+        compile("org.springframework.boot:spring-boot-starter-security:${springBootVersion}")
+        compile("org.springframework.session:spring-session:${springSessionVersion}")
+        compile("org.springframework.session:spring-session-data-redis:${springSessionVersion}")
+
+        testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+        testCompile("junit:junit:4.12")
+    }
+}
+
+project(':entity') {
+    dependencies {
+        compile("org.projectlombok:lombok:1.16.10")
+    }
+}
+
+project(':cmm-logic') {
+    dependencies {
+        compile project(':entity')
+    }
+}
+
+project(':cmm-config') {
+    dependencies {
+        compile project(':cmm-logic')
+    }
+}
+
+project(':api') {
+    apply plugin: 'war'
+
+    dependencies {
+        compile project(':cmm-config')
+        compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
+        compile springSocial
+        compile 'com.h2database:h2'
+        compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.14'
+    }
+
+    war.doLast{
+        explodedWar.execute()
+    }
+    task explodedWar(type : Copy){
+        into "$buildDir/exploded"
+        with war
+    }
+
+    war.dependsOn explodedWar
+}
+
+project(':security') {
+    apply plugin: 'war'
+
+    dependencies {
+        compile project(':cmm-config')
+        compile springSocial
+        compile 'com.h2database:h2'
+    }
+
+    war.doLast{
+        explodedWar.execute()
+    }
+    task explodedWar(type : Copy){
+        into "$buildDir/exploded"
+        with war
+    }
+
+    war.dependsOn explodedWar
+}

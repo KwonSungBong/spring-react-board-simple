@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=0, width=device-width" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>board</title>
+</head>
+<body>
+	<script type="text/javascript" th:inline="javascript">
+        document.domain = "localhost";	//로컬 테스트의 경우 포트가 다르면 크로스도메인에 걸려서 안되서 이렇게 작성하고 프론트 html파일도 동일하게 설정해야함.
+
+		var files = [[${files}]];
+		var file = files[0];
+
+		var isFileIdSetting = [[${fileIdSetting}]];
+		/*<![CDATA[*/
+		var fileNm = file.originUrl;
+		window.parent.CKEDITOR.tools.callFunction([[${cKEditorFuncNum}]], fileNm, function(){
+			var element,
+					dialog = this.getDialog();
+			// Check if this is the Image dialog window.
+			if ( dialog.getName() == 'image2' ) {
+				// Get the reference to a text field that holds the "srcset" attribute.
+				element = dialog.getContentElement( 'info', 'srcset' );
+				// Assign the new value.
+				if ( element )
+					element.setValue( fileNm + ' 480w, ' + fileNm + ' 768w, ' + fileNm + ' 1024w' );
+			}
+		});
+		if(isFileIdSetting !== undefined){
+			window.parent.CKEDITOR.tools.callFunction(isFileIdSetting, file);
+		}
+		/*]]>*/
+	</script>
+</body>
+</html>
