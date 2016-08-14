@@ -1,0 +1,17 @@
+.metadata
+target/
+*~
+.DS_Store
+._*
+.classpath
+.svn
+.settings
+.project
+.springBeans
+node_modules/
+.idea/
+*.iml
+build/
+out/
+dist/
+webpack-assets.json
