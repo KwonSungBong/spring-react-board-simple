@@ -3,25 +3,13 @@
  */
 import React, {PropTypes, Component} from 'react';
 import {Grid} from 'react-bootstrap';
-import {connect} from 'react-redux';
-import {push as pushState} from 'react-router-redux';
 
-@connect(
-    state => ({
-        loading: state.post.loading
-    }),
-    {pushState}
-)
 export default class Post extends Component {
     static propTypes = {
-        children: PropTypes.object.isRequired,
-        pushState: PropTypes.func.isRequired
+        children: PropTypes.object.isRequired
     }
 
     render() {
-        const {loading, pushState} = this.props;
-        const {props: {route: {path}}} = this.props.children;
-
         return (
             <Grid>
                 <Grid>
