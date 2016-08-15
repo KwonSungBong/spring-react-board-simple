@@ -31,10 +31,15 @@ const REMOVE = "post/REMOVE";
 const REMOVE_SUCCESS = "post/REMOVE_SUCCESS";
 const REMOVE_FAIL = "post/REMOVE_FAIL";
 
+const SHOW_DETAIL_MODAL = "post/SHOW_DETAIL_MODAL";
+const HIDE_DETAIL_MODAL = "post/HIDE_DETAIL_MODAL";
+
 const initialState = {
     loading: false,
     postList: {},
-    post: {}
+    post: {},
+    isDetailModal: false,
+    isFormModal: true
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -133,6 +138,7 @@ export default function reducer(state = initialState, action = {}) {
         case UPDATE_SUCCESS:
             return {
                 ...state,
+                post: action.post,
                 loading: false
             };
         case UPDATE_FAIL:
@@ -150,7 +156,8 @@ export default function reducer(state = initialState, action = {}) {
                 ...state,
                 postList: Object.assign({}, state.postList, {
                     content: state.postList.content.filter(post =>
-                    post.idx !== action.idx)
+                        post.idx !== action.idx
+                    )
                 }),
                 loading: false
             };
@@ -158,6 +165,17 @@ export default function reducer(state = initialState, action = {}) {
             return {
                 ...state,
                 loading: false
+            };
+        case SHOW_DETAIL_MODAL:
+            return {
+                ...state,
+                isDetailModal: true
+            };
+
+        case HIDE_DETAIL_MODAL:
+            return {
+                ...state,
+                isDetailModal: false
             };
         default:
             return state;
@@ -208,19 +226,12 @@ export function create(post){
 }
 
 export function update(post){
-    let attach;
-
-    if(post.file && post.file.file){
-        attach = [];
-        attach.push(data.file.file);
-        post.file.previewUrl = '';
-    }
-
     return {
         types: [UPDATE, UPDATE_SUCCESS, UPDATE_FAIL],
         promise: (client) => client.patch('/post', {
             data: post
-        })
+        }),
+        post: post
     }
 }
 
@@ -229,5 +240,17 @@ export function remove(idx){
         types: [REMOVE, REMOVE_SUCCESS, REMOVE_FAIL],
         promise: (client) => client.del('/post/' + idx),
         idx: idx
+    }
+}
+
+export function showDetailModal(){
+    return {
+        type: SHOW_DETAIL_MODAL
+    }
+}
+
+export function hideDetailModal(){
+    return {
+        type: HIDE_DETAIL_MODAL
     }
 }

@@ -52,7 +52,6 @@ export default (store) => {
 			<Route path="join" component={Join} />
 			<Route path="post" component={Post}>
 				<IndexRoute component={PostList} />
-				<Route path="page/:page" component={PostList} />
 				<Route path="form" component = {PostForm} />
 				<Route path="form/:idx" component = {PostForm} />
 				<Route path="detail/:idx" component = {PostDetail} />

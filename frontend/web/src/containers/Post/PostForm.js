@@ -80,7 +80,6 @@ function checkBlank(value) {
     },
     state => ({
         loading: state.post.loading,
-        page: state.post.postList.number ? state.post.postList.number + 1 : 1,
         post: state.post.post
     }),
     {pushState, create, update}
@@ -120,7 +119,7 @@ class PostForm extends Component {
 
     render() {
         const {fields: {idx, subject, content}, values, handleSubmit, submitting, invalid} = this.props;
-        const {loading, pushState, create, update, page} = this.props;
+        const {loading, pushState, create, update} = this.props;
         const wordBreakStyle = {wordBreak: 'break-all'};
 
         const header = (
@@ -142,14 +141,14 @@ class PostForm extends Component {
                             bsStyle="success" onClick={handleSubmit(() => {
                         values.content = this.editor.getData();
                         if(idx.value){
-                            update(values).then(result => pushState('/post/detail/' + idx.value));
+                            update(values).then(result => pushState('/post'));
                         } else {
                             create(values).then(result => pushState('/post'));
                         }
                     })}>
                         저장
                     </Button>
-                    <Button disabled={loading} onClick={() => pushState('/post/page/' + page)}>
+                    <Button disabled={loading} onClick={() => pushState('/post')}>
                         취소
                     </Button>
                 </ButtonGroup>
